@@ -32,13 +32,14 @@ hardMin=0
 hardMax=47
 
 function TIC()
+	cls()
     drawDataBar() --debug bar
 end
 
 function qualityPotition (r,g,b)
-	if g<>0
+	if g~=0
 		then
-			if (r<>0 and b<>0)
+			if (r~=0 and b~=0)
 				then
 					i=g//2
 					y=i
@@ -47,7 +48,7 @@ function qualityPotition (r,g,b)
 					r=r-y
 					b=b-c
 				else
-					if (r<>0)
+					if (r~=0)
 						then
 							i=math.min(r,g)
 							y=i
