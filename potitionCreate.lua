@@ -47,7 +47,12 @@ function TIC()
     drawDataBar() --debug bar
 end
 
-function qualityColorPotition (r,g,b)
+function qualityColorPotition (compPotition)
+--Вот теперь тут мы начинаем работать все же с таблицами
+r=compPotition[1]
+g=compPotition[2]
+b=compPotition[3]
+
 	if g~=0
 		then
 			if (r~=0 and b~=0)
