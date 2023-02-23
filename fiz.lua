@@ -63,9 +63,9 @@ end
 
 function drawDataBar()
     print (spStart, 1, 1, grey)
-    print (weight, 16, 1, grey)
-   print (sp, 1,10, white)
-   print (cornerValue, 1, 16, grey)
+    print (weight..'  start power and weight', 16, 1, grey)
+   print (sp..'speed now', 1,10, white)
+   print (cornerValue..' ygo/l', 1, 16, grey)
    print (tx, 1, 22, white)
    print (ty, 1, 28, white)
 end

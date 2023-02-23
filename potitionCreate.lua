@@ -32,11 +32,22 @@ hardMin=0
 hardMax=47
 
 function TIC()
+	--mini test сделть функцией подсчета суммы всего на картах
+	f1 = {ri = 1, gi = 1, bi = 2}
+	f2 = {ri = 2, gi = 1, bi = 1}
+	f3 = {ri = 2, gi = 1, bi = 1}
+	
+	re = f1.ri + f2.ri + f3.ri
+	ge = f1.gi + f2.gi + f3.gi
+	be = f1.gi + f2.gi + f3.gi
+	--mini test end
+	--В общм этот костыль работает оставим так двроде бы нормально добаим карт если что будем зпаполнять их нолями
 	cls()
+	r, y, g, c, b = qualityColorPotition (re, ge, be)
     drawDataBar() --debug bar
 end
 
-function qualityPotition (r,g,b)
+function qualityColorPotition (r,g,b)
 	if g~=0
 		then
 			if (r~=0 and b~=0)
@@ -62,6 +73,7 @@ function qualityPotition (r,g,b)
 		else
 			--дописать финальное приравнивание
 	end
+	return r, y, g, c, b
 end
 
 function testCreatePotition()
