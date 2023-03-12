@@ -9,6 +9,29 @@
 maxX = 240 -- screen X - cos
 maxY = 136 -- screen Y - sin
 
+devOption=
+{
+    --рисовать или нет дебаг бар
+    debag = 1
+}
+
+--inventory list
+
+inv=
+{
+    A=0,
+    B=0,
+    C=3
+}
+
+--game status
+
+game=
+{   
+    state = 0,
+    faze = 1
+}
+
 --initialization color
 black=0
 purple=1
@@ -49,16 +72,28 @@ modX=1*math.cos(math.rad(cornerValue))
 modY=1*math.sin(math.rad(cornerValue))
 
 frameSumm=0
-
+debag = 0
 cls()
 
 function TIC()
             cls()
-            pushBall(weight)
+            --тест рисуем карту, тут пока описываем работу сбора ресурсов
+            --разобьем игру на фазы, 1 - выбор шара, его запуск, 2 - оставим для катания, 3 - сбор ресов и цикл дальше
+            map (0,0,30,17)
+            if game.faze == 1 then
+                pushBall(weight)
+            end
             coordBall()
-            slowDown(weight)
+            if game.faze == 2 then
+                slowDown(weight)
+            end
             spr (48,tx,ty)
-            drawDataBar() --debug bar
+            if game.faze == 3 then
+                dropPlants (tx, ty)
+            end
+            if game.debag = 1 then
+                drawDataBar() --debug bar
+            end
 end
 
 function drawDataBar()
@@ -68,6 +103,9 @@ function drawDataBar()
    print (cornerValue, 1, 16, grey)
    print (tx, 1, 22, white)
    print (ty, 1, 28, white)
+   NX=mget (tx//8,ty//8)
+   print ("A="..inv.A .." B="..inv.B .." C="..inv.C.."   "..NX..game.faze, 50, 1, white)
+   print ("debug  "..debag, 155, 1, red)
 end
 
 function coordBall()
@@ -94,6 +132,7 @@ if frameSumm==60
             sp=sp-g
         else
             sp=0
+            game.faze = 3 --Остановились, а значит можно собрать траву
     end
     else
 end
@@ -137,9 +176,15 @@ function pushBall(weight)
         if (spStart-weight) <=1
             then
                 sp=1
+                game.faze = 2 --толкнули шар, а значит переходим на следующую фазу
             else
                 sp=spStart-weight
-        end    
+                game.faze = 2 --толкнули шар, а значит переходим на следующую фазу
+                
+        end
+
+        
+
     end
 
     if btn(2) -- button left
@@ -156,45 +201,48 @@ function pushBall(weight)
         end
     -- paint way line
 
-
-    if spStart < spMax/3 -- Рисуем цвет в зависимости от величины до 33%зеленый, до 66%желтый, дальше красный
-        then
+-- Рисуем цвет в зависимости от величины до 33%зеленый, до 66%желтый, дальше красный
+    if spStart < spMax/3 then 
             lineColor=lightGreen
+        elseif (spStart<=2*spMax/3 and spStart>=spMax/3) then
+            lineColor=yellow
         else
-            if (spStart<=2*spMax/3 and spStart>=spMax/3)
-                then
-                    lineColor=yellow
-                else
-                    lineColor=red
-            end
+            lineColor=red
     end
 
-    if sp==0 -- Рисуем стрелку, только если шар стоит
+    if game.faze==1 -- Рисуем стрелку, только в первой фазе
         then
-            line (tx+4, ty+4, tx+spStart*modX*3, ty+spStart*modY*3, lineColor)
+            line (tx+4, ty+4, tx+8+spStart*modX*3, ty+8+spStart*modY*3, lineColor)
         else
     end
-end
+    
+    function dropPlants(xBall,yBall)
+--Собираем травку в зависимости от того, какие тайлы задевает шар, но только в третьей фазе
+        --if game.faze == 3 then
 
-function canIWalk()
---Определяем координаты квадрата тайла, потом мы их подвигаем, что бы понять, можем ли мы двигаться, или нет.
-    local x1 = 1
-    local x2 = 1
-    local y1 = 1
-    local y2 = 1
---Забираем инфу о тайлах нужных нам с помощью, а дальше определяем изменение модификатора
-    p1 = tileNumber (x1,y1)
-    p2 = tileNumber (x1,y2)
-    p3 = tileNumber (x2,y1)
-    p4 = tileNumber (x2,y2)
---По кругу проверяем тайл на данных значениях
-     
+            dropPlant (xBall, yBall)
+            dropPlant (xBall+8, yBall)
+            dropPlant (xBall, yBall+8)
+            dropPlant (xBall+8, yBall+8)
 
-end
+            game.faze = 1
 
-function tileInfo (x) --Смотрим тип тайла на оторый перемещается точка
-    if (x>=hardMin and x<=hardMax)
-        then
-        return false
+        --end
+    end
+
+    function dropPlant (xBall, yBall)
+
+       local tilePlant  = mget (xBall//8, yBall//8)
+
+        if tilePlant == 246 then 
+            inv.A = inv.A + 1
+            debag = 1 --ебать длебаг
+        elseif tilePlant == 247 then 
+            inv.B = inv.B + 1
+            debag = 1 --ебать длебаг
+        elseif tilePlant == 248 then 
+            inv.C = inv.C + 1
+            debag = 1 --ебать длебаг
+        end
     end
 end
